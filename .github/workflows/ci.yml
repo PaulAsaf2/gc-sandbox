@@ -1,0 +1,17 @@
+# Простая проверка для pull request в песочнице: город ждёт зелёный CI перед
+# слиянием. Проверяет синтаксис shell-скриптов и что в репозитории нет
+# пустых README.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [dev, main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: shell syntax
+        run: find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -r -n1 bash -n
+      - name: README not empty
+        run: test -s README.md
